@@ -1,0 +1,120 @@
+<html>
+<head>
+  <title>profile</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container">
+    <img id="image"src=""/>
+    <form id="imgform" style="display: none">
+      <label for="url">Update Image</label>
+      <input id="url" type="text" >
+      <input type="submit">
+    </form>
+  </div>
+  <div class="Container">
+    <p>Name: <span id="firstName"></span> <span id="lastName"></span></p>
+    <p>Email: <span id="email"></span></p>
+    <p>Number <span id="phoneNumber"></span></p>
+    <p>Bio: <span id="bio"></span></p>
+    <button id="button">Edit</button>
+  </div>
+  <form id="form" style="display: none">
+    <label for="firstName">First Name</label>
+    <input type="text" id="firstName" >
+    <label for="lastName">Last Name</label>
+    <input type="text" id="lastName">
+    <label for="email">Email</label>
+    <input type="email" id="email">
+    <label for="phoneNumber">Phone</label>
+    <input type="text" id="phoneNumber">
+    <input type="submit">
+  </form>
+  <script type="text/javascript">
+    function User(args) {
+      this.firstName = args.firstName;
+      this.lastName = args.lastName;
+      this.email = args.email;
+      this.phoneNumber = args.phoneNumber;
+      this.bio = args.bio
+      this.image = args.image
+    }
+
+    ross = new User({firstName: "Ross",lastName: "Wilson", email: "arthur.ross.wilson@gmail.com", phoneNumber: "9199206398", bio: "Blah blah blah", image:"http://i.imgur.com/UMq1tJk.gif"})
+
+    var ProfileUI = {
+      updatePage: function(){
+        this.updateHTML();
+        this.formHandler();
+        this.editHandler();
+        this.imgFormHandler();
+        this.updateImg();
+      },
+      populateIdWithHTML: function(id, text){
+        var element = document.getElementById(id);
+        element.innerHTML = text;
+      },
+      formHandler: function(){
+        var form = document.getElementById("form");
+        form.addEventListener("submit", function(event){
+          event.preventDefault();
+          var elements = event.target.elements
+          for(var i = 0; i< elements.length; i++){
+            if(ross.hasOwnProperty(elements[i].id) && elements[i].value != ""){
+              ross[elements[i].id] = elements[i].value
+            }
+          }
+          this.style.display="none"
+          ProfileUI.updateHTML();
+        })
+      },
+      editHandler: function(){
+        var button = document.getElementById("button")
+        button.addEventListener("click",function(event){
+          event.preventDefault();
+          document.getElementById("form").style.display='';
+        })
+      },
+      updateHTML: function(){
+        for (var key in ross) {
+          if (ross.hasOwnProperty(key)) {
+            if(key === "image"){
+              document.getElementById(key).src=ross[key];
+            }
+            else{
+              this.populateIdWithHTML(key, ross[key]);
+            }
+          }
+        }
+      },
+      imgFormHandler: function(){
+        var img = document.getElementById("image");
+        img.addEventListener("click", function(event){
+          event.preventDefault();
+          document.getElementById("imgform").style.display='';
+        })
+      },
+      updateImg: function(){
+        var form = document.getElementById("imgform");
+        form.addEventListener("submit", function(event){
+          event.preventDefault();
+          ross["image"]=this.elements[0].value
+          this.style.display="none"
+          ProfileUI.updateHTML();
+        })
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function(){
+      ProfileUI.updatePage();
+    })
+  </script>
+</body>
+</html>
+
