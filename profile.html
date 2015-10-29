@@ -7,11 +7,18 @@
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
 
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
   <link rel="stylesheet" type="text/css" href="theme.css">
 </head>
 <body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">rossbook</a>
+      </div>
+    </div>
+  </nav>
   <div class="container mainpage">
     <div class="container image">
       <img id="image"src=""/>
@@ -51,8 +58,32 @@
       <div class="form-group">
         <label for="bio">Bio</label>
         <textarea id="bio" class="form-control"></textarea>
+      </div>
       <input type="submit" class="btn btn-default">
     </form>
+  </div>
+
+  <div class="container mainpage">
+    <div class="container" id="nav">
+      <p><a id="educationInfo" href="#">Education Info</a></p>
+      <p><a id="likes" href="#">Likes</a></p>
+    </div>
+    <div class="container" id="info">
+      <ul id="listeducationInfo">
+      </ul>
+      <ul style="display:none"id="listlikes">
+      </ul>
+    </div>
+    <div class="container itemform">
+      <a id="addItem" href="#">Add Item</a>
+      <form id="listform" class="form-inline"style="display: none">
+        <div class="form-group">
+          <label for="addnewitem">Add to List</label>
+          <input id="addnewitem" type="text" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+    </div>
   </div>
   <script type="text/javascript">
     function User(args) {
@@ -62,9 +93,11 @@
       this.phoneNumber = args.phoneNumber;
       this.bio = args.bio
       this.image = args.image
+      this.likes = args.likes
+      this.educationInfo = args.educationInfo
     }
 
-    ross = new User({firstName: "Ross",lastName: "Wilson", email: "arthur.ross.wilson@gmail.com", phoneNumber: "9199206398", bio: "Blah blah blah", image:"http://i.imgur.com/UMq1tJk.gif"})
+    ross = new User({firstName: "Ross",lastName: "Wilson", email: "arthur.ross.wilson@gmail.com", phoneNumber: "9199206398", bio: "When I graduated from UNC in 2010, I got a job as a project manager at Epic, which is a electronic medical record. My role, there was to help hospitals implement the software after they had purchased it. These implementations would typically take 8 months to a year. I also had the opportunity to work with development to create new features and products that our customers wanted.  During these experiences I realized how much I wanted to actually be involved in creating something. This made sense because I have always enjoyed using my imagination to create things and generally enjoyed problem solving. This realization eventually lead me to pursue development. At first I tried learning on my own, but after little progress over a large timespan, I realized that that I needed a different and more extreme approach. I found Dev Bootcamp online and it seemed like exactly what I was looking for. I graduated from DBC in August of 2015, and am excited to find a position where I have the opportunity to grow and contribute meaningful work.", image:"https://scontent-lga3-1.xx.fbcdn.net/hphotos-prn2/v/t1.0-9/10006336_10201700625783080_511632531_n.jpg?oh=18b225017052f10ad1e8dbce1dab7d58&oe=56CF7009", educationInfo: ["High School: Wayne Country Day, 2006"], likes: ["apples", "coffee", "True Lies"]})
 
     var ProfileUI = {
       updatePage: function(){
@@ -73,6 +106,9 @@
         this.editHandler();
         this.imgFormHandler();
         this.updateImg();
+        this.navHandler();
+        this.listFormHandler();
+        this.addItemHandler();
       },
       populateIdWithHTML: function(id, text){
         var element = document.getElementById(id);
@@ -105,6 +141,9 @@
             if(key === "image"){
               document.getElementById(key).src=ross[key];
             }
+            else if(Array.isArray(ross[key])){
+              this.updateList(key);
+            }
             else{
               this.populateIdWithHTML(key, ross[key]);
             }
@@ -127,6 +166,67 @@
           }
           this.style.display="none"
           ProfileUI.updateHTML();
+        })
+      },
+      navHandler: function(){
+        var nav = document.getElementById("nav");
+        var lists = document.getElementById("info").children;
+        nav.addEventListener("click", function(event){
+          event.preventDefault();
+          var id = event.target.id;
+          ProfileUI.hideInfo(lists);
+          ProfileUI.GetElementInsideContainer("info", "list"+ id).style.display='';
+        })
+      },
+      hideInfo: function(array){
+        for(i=0; i<array.length; i++){
+          array[i].style.display = "none";
+        }
+      },
+      updateList: function(id){
+        var list = this.GetElementInsideContainer("info", "list"+id);
+        $(list.children).empty();
+        var arr = ross[id]
+        for(i=0; i < arr.length; i++){
+          var li = document.createElement("li");
+          li.innerHTML = arr[i]
+          list.appendChild(li);
+        }
+      },
+      GetElementInsideContainer: function(containerID, childID) {
+        var elm = document.getElementById(childID);
+        var parent = elm ? elm.parentNode : {};
+        if (parent.id && parent.id === containerID){
+          return elm
+        }
+      },
+      listFormHandler: function(){
+        var form = document.getElementById("listform");
+        var lists = document.getElementById("info").children;
+        form.addEventListener("submit", function(event){
+          event.preventDefault();
+          var item = event.target.elements[0].value;
+          for(i=0; i< lists.length; i++){
+            if(lists[i].style.display != 'none'){
+              var property = lists[i].id.slice(4);
+              if (ross.hasOwnProperty(property)){
+                var len = ross[property].length;
+                ross[property][len] = item;
+              }
+            }
+            document.getElementById("addnewitem").value='';
+            form.style.display="none";
+            document.getElementById("addItem").style.display='';
+          }
+          ProfileUI.updateHTML();
+        })
+      },
+      addItemHandler: function(){
+        var link = document.getElementById("addItem")
+        link.addEventListener("click", function(event){
+          event.preventDefault();
+          this.style.display="none";
+          document.getElementById("listform").style.display='';
         })
       }
     }
