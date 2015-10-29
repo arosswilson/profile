@@ -1,0 +1,40 @@
+#image{
+  max-width: 200px;
+  max-height: 300px;
+}
+
+body {
+  background-color: #f6f6f6;
+  font: #add8e6;
+}
+
+#form {
+  float:right;
+  width: 60%;
+  display:inline-block;
+}
+
+.mainpage {
+  font: #add8e6;
+  background-color: white;
+  border: 1px solid grey;
+  width: 70%;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+p {
+  border-top: 1px solid grey;
+}
+
+.image{
+  float: left;
+  width: 30%;
+}
+
+.maininfo {
+  display: inline-block;
+  width: 40%;
+}
