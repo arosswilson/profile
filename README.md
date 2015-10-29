@@ -8,3 +8,4 @@ For this challenge I have made a simple social media profile that shows a pictur
 1.  It would be nice to be able to add/edit education info and likes
 2.  It would be nice to delete education info and likes
 3.  make the data for education info and likes more robust (instead of using an array, use an object/hash to store discreet data about the education and likes).
+4.  The ProfileUI should take a user object as an argument instead of hard-coding ross into it.
