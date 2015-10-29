@@ -57,7 +57,7 @@ ul {
 }
 
 .itemform {
-  width: 60%;
+  width: 65%;
   float: right;
 }
 
@@ -65,8 +65,4 @@ ul {
   max-height: 150px;
   overflow: scroll;
   display:block;
-}
-
-span {
-  font: ;
 }
